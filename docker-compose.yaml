@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_DB: MarketPlace
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres77
+      POSTGRES_PASSWORD: passwordSecret
     ports:
       - "5432:5432"
     healthcheck:
@@ -27,4 +27,4 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/MarketPlace
       SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres77
+      SPRING_DATASOURCE_PASSWORD: passwordSecret
