@@ -4,6 +4,7 @@ package com.example.MarketPlace.controller;
 import com.example.MarketPlace.dto.ReviewRequestDto;
 import com.example.MarketPlace.dto.ReviewResponseDto;
 import com.example.MarketPlace.service.ReviewService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,10 @@ public class ReviewController {
 
 
     @PostMapping
+    @Operation(
+            summary = "Залишити відгук",
+            description = "Створює новий відгук до товару від імені поточного авторизованого користувача"
+    )
     public ResponseEntity<ReviewResponseDto> addReview(
             @Valid @RequestBody ReviewRequestDto dto,
             @AuthenticationPrincipal Long currentUserId
@@ -30,6 +35,10 @@ public class ReviewController {
     }
 
     @GetMapping("/item/{itemId}")
+    @Operation(
+            summary = "Отримати відгук для товару",
+            description = "Повертає відгук за унікальним ідентифікатором товару (itemId)"
+    )
     public ResponseEntity<ReviewResponseDto> getByItem(@PathVariable Long itemId){
         ReviewResponseDto reviews = (ReviewResponseDto) reviewService.getByItem(itemId);
         return ResponseEntity.ok(reviews);

@@ -7,6 +7,7 @@ import com.example.MarketPlace.dto.UserRegisterDto;
 
 import com.example.MarketPlace.entity.User;
 import com.example.MarketPlace.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,10 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
+    @Operation(
+            summary = "Реєстрація нового користувача",
+            description = "Приймає дані для реєстрації (UserRegisterDto), валідує їх та створює новий обліковий запис у системі"
+    )
     public ResponseEntity<String> register(@Valid @RequestBody UserRegisterDto dto) {
         // Якщо реєстрацію обробляє authService або userService:
         // authService.register(dto);
@@ -33,6 +38,10 @@ public class AuthController {
     }
 
     @PostMapping("/login")
+    @Operation(
+            summary = "Авторизація користувача (Login)",
+            description = "Перевіряє логін та пароль користувача, повертає токен аутентифікації (AuthResponseDto) для подальших запитів"
+    )
     public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody AuthRequestDto dto) {
         AuthResponseDto response = authService.login(dto);
         return ResponseEntity.ok(response);

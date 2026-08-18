@@ -4,6 +4,8 @@ import com.example.MarketPlace.dto.BookingRequestDto;
 import com.example.MarketPlace.dto.BookingResponseDto;
 import com.example.MarketPlace.entity.User;
 import com.example.MarketPlace.service.BookingService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,11 +18,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/bookings")
 @AllArgsConstructor
+@Tag(name = "Booking Controller", description = "Управління бронюваннями та замовленнями")
 public class BookingController {
 
     private final BookingService bookingService;
 
     @PostMapping
+    @Operation(summary = "Створити нове бронювання", description = "Реєструє нове бронювання для користувача")
     public ResponseEntity<BookingResponseDto> createBooking(
             @Valid @RequestBody BookingRequestDto dto,
             @AuthenticationPrincipal User userDetails) {
@@ -31,6 +35,7 @@ public class BookingController {
     }
 
     @GetMapping("/user")
+    @Operation(summary = "Отримати деталі бронювання", description = "Повертає інформацію про бронювання за його ID")
     public ResponseEntity<List<BookingResponseDto>> getUserBookings(
             @AuthenticationPrincipal User userDetails) {
 
@@ -40,6 +45,10 @@ public class BookingController {
     }
 
     @PutMapping("/{id}/status")
+    @Operation(
+            summary = "Підтвердити або відхилити бронювання",
+            description = "Змінює статус бронювання (APPROVED / REJECTED). Виконувати дію може лише власник об'єкта."
+    )
     public ResponseEntity<BookingResponseDto> updateBookingStatus(
             @PathVariable("id") Long bookingId,
             @RequestParam Boolean approved,
