@@ -5,13 +5,15 @@ services:
     image: postgres:15-alpine
     container_name: marketplace-db
     environment:
-      POSTGRES_DB: MarketPlace
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: passwordSercet
+      POSTGRES_DB: ${POSTGRES_DB:-MarketPlace}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-passwordSecret}
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d MarketPlace"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-MarketPlace}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -24,10 +26,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      kafka:
+        condition: service_started
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/MarketPlace
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: passwordSercet
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-MarketPlace}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-passwordSecret}
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
@@ -49,3 +54,6 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+volumes:
+  postgres_data:
